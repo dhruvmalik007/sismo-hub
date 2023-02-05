@@ -2,8 +2,8 @@ import {dataProviders} from "@group-generators/helpers/data-providers"
 import { dataOperators } from "@group-generators/helpers/data-operators"
 import dotenv from "dotenv"
 import {Tags,ValueType,GroupWithData, AccountSource} from "topics/group"
-
-import {  GenerationContext,
+import {getApplicantResponse, getCheckResponse} from './scripts/simulate-sandbox-test'
+import { GenerationContext,
     GenerationFrequency,
     GroupGenerator,
 } from "topics/group-generator"
@@ -15,9 +15,7 @@ type onfidoResponseType =  {
 applicant_id: string;
 typeOfVerif: typeof typeOfVerif;
 result:typeof kycStatus;
-// document_id: string;
-// live_photo_id: string;
-// check_id: string;
+
 
 };
 
@@ -38,10 +36,10 @@ const ApiConfig: ApiConfig = {
     url: "https://api.eu.onfido.com/v3.4/checks",
     method: "GET",
     headers: {
-       Authorization: `token ${process.env.API_TOKEN}` 
+       Authorization: `token ${process.env.ONFIDO_API}` 
     },
     data: {
-        applicant_id: "",
+        applicant_id: getApplicantResponse[0],
         report: typeOfVerif
     }
 };
@@ -73,6 +71,7 @@ return [
     {
         name: "onfido-verified-entities",
         timestamp: context.timestamp,
+        generatedBy:'' ,
         data: elligibleContributors,
         accountSources: [AccountSource.ETHEREUM],
         valueType: ValueType.Score,
